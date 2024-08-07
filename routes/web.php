@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ChirpController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,15 @@ Route::post('/email/verification-notification', function (Request $request) {
 
     return back()->with('message', 'Verification link sent!');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+// Handle notification subscriptions
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::post('notifications/email/subscribe', [UserController::class, 'subscribeToMailNotifications'])
+        ->name('notifications.email.subscribe');
+
+    Route::post('notifications/email/unsubscribe', [UserController::class, 'unsubscribeFromMailNotifications'])
+        ->name('notifications.email.unsubscribe');
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
