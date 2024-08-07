@@ -14,8 +14,10 @@ class ChirpController extends Controller
      */
     public function index(): View
     {
+        $CHIRPS_PER_PAGE = 3;
+
         return view('chirps.index', [
-            'chirps' => Chirp::with('user')->latest()->get(),
+            'chirps' => Chirp::with('user')->latest()->simplePaginate($CHIRPS_PER_PAGE),
         ]);
     }
 
